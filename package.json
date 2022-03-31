@@ -1,0 +1,22 @@
+{
+  "name": "pager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "/dist/app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flavioplc/pager.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/flavioplc/pager/issues"
+  },
+  "homepage": "https://github.com/flavioplc/pager#readme",
+  "dependencies": {
+    "shortid": "^2.2.16"
+  }
+}
