@@ -21,16 +21,20 @@ export class PagerService implements PagerServiceInterface {
      persistanceDB: DBInterface,
      escalationPolicyService: EscalationPolicyInterface,
      timoutService: EscalationTimoutInterface,
+     smsNotificationService: SMSInterface,
+     emailNotificationService: EmailInterface,
     ){
         this.persistanceDB = persistanceDB;
         this.escalationPolicyService = escalationPolicyService;
         this.timoutService = timoutService;
+        this.smsNotificationService = smsNotificationService;
+        this.emailNotificationService = emailNotificationService;
     }
     async solveServiceIncident(incidentId: string):Promise<Incident> {
         const incident = await this.persistanceDB.getIncident(incidentId);
 
         if (!incident || incident.solvedAt) {
-            throw new Error(`No active incident on service ${incident.serviceIdentifier}`);
+            throw new Error(`No active incident on service`);
         }
 
         incident.solve();
@@ -45,7 +49,7 @@ export class PagerService implements PagerServiceInterface {
         const incident = await this.persistanceDB.getIncident(incidentId);
 
         if (!incident || incident.solvedAt) {
-            throw new Error(`No active incident on service ${incident.serviceIdentifier}`);
+            throw new Error(`No active incident on service`);
         }
 
         incident.acknowledge();
@@ -59,9 +63,11 @@ export class PagerService implements PagerServiceInterface {
     };
     async serviceIncidentAlertTimout(incidentId: string):Promise<Incident> {
         const incident = await this.persistanceDB.getIncident(incidentId);
-
-        if (!incident || incident.solvedAt) {
-            this.timoutService.resetAlertTimout(incidentId);
+        if (!incident) {
+            throw new Error('No incident')
+        }
+        if (incident.solvedAt || incident.acknowledgedAt) {
+            await this.timoutService.resetAlertTimout(incidentId);
 
             return incident;
         }
@@ -72,6 +78,8 @@ export class PagerService implements PagerServiceInterface {
 
         await Promise.all(targets.map((target) => this.sendAlert(incident, target)));
         await this.timoutService.setAlertTimout(alertEscalationTimoutDuration, incident.id);
+
+        return Promise.resolve(incident);
     };
         
     async raiseServiceIncident(serviceIdentifier: string, message: string): Promise<Incident> {

@@ -16,18 +16,27 @@ export default class EscalationPolicyServiceMock implements EscalationPolicyInte
         const ep2 = new EscalationPolicyLevel(2, [target3]);
         const ep3 = new EscalationPolicyLevel(1, [target1]);
 
-
+        this.EPServiceMap = new Map<string, EscalationPolicy>();
         this.EPServiceMap.set('service_1', new EscalationPolicy('service_1', [ep1, ep2]));
         this.EPServiceMap.set('service_2', new EscalationPolicy('service_1', [ep3, ep2]));
 
     }
     async getEscalationPolicyByService(serviceIdentifier: string):Promise<EscalationPolicy> {
-        return Promise.resolve(this.EPServiceMap.get(serviceIdentifier));
+        const escalationPolicy = this.EPServiceMap.get(serviceIdentifier);
+        if (escalationPolicy) {
+            return Promise.resolve(escalationPolicy);
+        } else {
+            return Promise.reject("notFound")
+        }
+     
     };
     async getEscalationPolicyTargets(serviceIdentifier: string, level: number):Promise<Array<EscalationPolicyTarget>> {
         const EP = this.EPServiceMap.get(serviceIdentifier);
+        if(!EP) {
+            return Promise.reject("notFound")
+        }
         const [EPLevel] = EP.levels.filter((epl) => epl.level === level);
 
-        return EPLevel.targets;
+        return Promise.resolve(EPLevel.targets);
     };
 }

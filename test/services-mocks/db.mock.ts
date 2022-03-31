@@ -1,7 +1,7 @@
 import DBInterface from "../../interfaces/external/db.interface"
 import Incident from "../../models/incident.model";
 
-export default class Database implements DBInterface {
+export default class DBMock implements DBInterface {
     private incidentList: Map<string, Incident>
 
     constructor() {
@@ -19,8 +19,8 @@ export default class Database implements DBInterface {
 
         return Promise.resolve(incident);
     }
-    async getIncident(incidentId: string):Promise<Incident> {
-        return this.incidentList.get(incidentId);
+    async getIncident(incidentId: string):Promise<Incident | undefined> {
+        return Promise.resolve(this.incidentList.get(incidentId));
     };
     async serviceHasOpenIncident(serviceIdentifier: string):Promise<boolean> {
         for (const [id, incident] of this.incidentList) {
