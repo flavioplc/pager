@@ -1,7 +1,7 @@
 # pager
 
 
-pager is a Typescript NodeJS service intended to dispatch alerts following escalation policies to notification services, this project as been made folowing Aircall Hiring Team [Technical Test](https://github.com/aircall/technical-test-pager)
+pager is a Typescript NodeJS service intended to dispatch alerts following escalation policies to notification services, this project as been made following Aircall Hiring Team [Technical Test](https://github.com/aircall/technical-test-pager)
 
 ### Install dependencies : 
 
